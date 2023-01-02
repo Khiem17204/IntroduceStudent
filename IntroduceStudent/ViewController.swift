@@ -25,11 +25,15 @@ class ViewController: UIViewController {
     }
     @IBOutlet weak var morePetSwitch: UISwitch!
     
+    let defaults = UserDefaults.standard
+    
     @IBAction func introduceSelf(_ sender: UIButton) {
         
         let year = schoolYearSegment.titleForSegment(at: schoolYearSegment.selectedSegmentIndex)
         
         let introduction = "My name is \(firstNameTextField.text!) \(lastNameTextField.text!) and I am attending \(schoolNameTextField.text!). I just started my \(year!) year at my school, and I absolutely love the environment here. I own \(numberOfPetsLabel.text!) pets. It is \(morePetSwitch.isOn) that I want more pets."
+        
+        saveUserInformation();
         
         let alertController = UIAlertController(title: "Introduce myself", message: introduction, preferredStyle: .alert)
         
@@ -40,9 +44,32 @@ class ViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    struct Keys {
+            static let firstName = "firstName"
+            static let lastName = "lastName"
+            static let schoolName = "schoolName"
+        }
+    
+    func saveUserInformation() {
+        defaults.set(firstNameTextField.text!, forKey: Keys.firstName);
+        defaults.set(lastNameTextField.text!, forKey: Keys.lastName);
+        defaults.set(schoolNameTextField.text!, forKey: Keys.schoolName);
+    }
+    
+    func checkForSavedName() {
+            let firstName = defaults.value(forKey: Keys.firstName) as? String ?? ""
+            let lastName = defaults.value(forKey: Keys.lastName) as? String ?? ""
+            let schoolName = defaults.value(forKey: Keys.schoolName) as? String ?? ""
+        
+            firstNameTextField.text = firstName
+            lastNameTextField.text = lastName
+            schoolNameTextField.text = schoolName
+        }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        checkForSavedName()
     }
 
 
